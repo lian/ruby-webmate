@@ -1,0 +1,3 @@
+class WebProject
+  # ..
+end
