@@ -32,7 +32,23 @@ describe WebProject do
       remove_rspec_dir(@project_path)
     end
     
-    it "should return directory path of project" do
+    it "should initialize project.meta" do
+      @project = WebProject.create @project_name
+      @project.meta.should_not == nil
+      @project.meta.class.should == Hash
+    end
+
+    it "should be able to return title of project" do
+      @project = WebProject.create @project_name
+      @project.meta["project_title"].should == @project_name
+    end
+    
+    it "should be able to return type of project" do
+      @project = WebProject.create @project_name
+      @project.meta["project_type"].should == "web"
+    end
+
+    it "should be able to return directory path of project" do
       @project = WebProject.create @project_name
       @project.path.should == @project_path
     end
