@@ -9,11 +9,20 @@ class WebProject
     @meta ||= {}
     @meta = YAML.load_file("#{@path}/project.meta")
   end
+  
+  def pages
+    Dir[@path+"/pages/*.erb"].collect { |i| File.basename(i).gsub(".erb","") }
+  end
+  def layouts
+    Dir[@path+"/pages/_layout/*.erb"].collect { |i| File.basename(i).gsub(".erb","") }
+  end
+  
+  
 end
 
 class WebProject
   DIR_STRUCTURE = ["","pages","pages/_layout","pages/_partial","resources","resources/css","resources/js","resources/media"]
-  FILE_STRUCTURE = ["pages/index.erb","resources/css/default.css","resources/js/default.js"]
+  FILE_STRUCTURE = ["pages/index.erb","pages/_layout/layout.erb","resources/css/default.css","resources/js/default.js"]
   
   def self.generate_default_files_and_directories(project_path)
     DIR_STRUCTURE.each  { |dir_path| tmp_path = "#{project_path}/#{dir_path}"; Dir.mkdir(tmp_path) unless File.exists?(tmp_path) }
