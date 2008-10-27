@@ -11,12 +11,24 @@ class WebProject
   end
   
   def pages
-    Dir[@path+"/pages/*.erb"].collect { |i| File.basename(i).gsub(".erb","") }
-  end
-  def layouts
-    Dir[@path+"/pages/_layout/*.erb"].collect { |i| File.basename(i).gsub(".erb","") }
+    file_list("pages", ".erb")
   end
   
+  def layouts
+    file_list("pages/_layout", ".erb")
+  end
+  
+  def stylesheets
+    file_list("resources/css", ".css")
+  end
+  
+  def javascripts
+    file_list("resources/js", ".js")
+  end
+  
+  def file_list(path,ext)
+    Dir[@path+"/#{path}/*#{ext}"].collect { |i| File.basename(i).gsub(ext,'') }
+  end
   
 end
 

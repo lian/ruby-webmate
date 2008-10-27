@@ -21,12 +21,20 @@ describe WebProject do
       File.exists?(@project_path+"/.git").should == true
     end
     
-    it "should create a default index.erb page" do
+    it "should create index.erb page" do
       @project.pages.first.should == "index"
     end
 
-    it "should create a default layout.erb layout" do
+    it "should create layout.erb layout" do
       @project.layouts.first.should == "layout"
+    end
+    
+    it "should create default.css stylesheet" do
+      @project.stylesheets.first.should == "default"
+    end
+    
+    it "should create default.js javascript" do
+      @project.javascripts.first.should == "default"
     end
   end
 
@@ -65,6 +73,17 @@ describe WebProject do
       @project.layouts.class.should == Array
       @project.layouts.size.should > 0
     end
+
+    it "should be able to list stylesheets of project" do
+      @project.stylesheets.class.should == Array
+      @project.stylesheets.size.should > 0
+    end
+    
+    it "should be able to list javascripts of project" do
+      @project.javascripts.class.should == Array
+      @project.javascripts.size.should > 0
+    end
+    
   end
   
 end # WebProject
