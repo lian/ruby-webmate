@@ -21,24 +21,23 @@ describe WebProject do
       File.exists?(@project_path+"/.git").should == true
     end
     
-    it "should create index.erb page" do
+    it "should add index.erb page" do
       @project.pages.first.should == "index"
     end
 
-    it "should create layout.erb layout" do
+    it "should add layout.erb layout" do
       @project.layouts.first.should == "layout"
     end
     
-    it "should create default.css stylesheet" do
+    it "should add default.css stylesheet" do
       @project.stylesheets.first.should == "default"
     end
     
-    it "should create default.js javascript" do
+    it "should add default.js javascript" do
       @project.javascripts.first.should == "default"
     end
   end
 
-  
   describe "when initialized" do
     before(:each) do
       @project_name = "rspec_project_initialized"

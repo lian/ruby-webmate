@@ -9,7 +9,11 @@ class WebProject
     @meta ||= {}
     @meta = YAML.load_file("#{@path}/project.meta")
   end
-  
+
+  def page_create(name)
+    WebPage.create(name, self)
+  end
+
   def pages
     file_list("pages", ".erb")
   end
