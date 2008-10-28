@@ -1,0 +1,37 @@
+<h1>Webmate: <%= `hostname` %> Projekt: <%= @project.name %></h1>
+
+<hr />
+
+<br />
+Layouts:<br />
+<ul>
+	<% @project.layouts.each { |name| %>
+		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+	<% } %>
+</ul>
+
+
+Seiten:<br />
+<ul>
+	<% @project.pages.each { |name| %>
+		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+	<% } %>
+</ul>
+
+
+<br />
+Stylesheets:<br />
+<ul>
+	<% @project.stylesheets.each { |name| %>
+		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+	<% } %>
+</ul>
+
+
+<br />
+Javascripts:<br />
+<ul>
+	<% @project.javascripts.each { |name| %>
+		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+	<% } %>
+</ul>

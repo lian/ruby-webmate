@@ -1,0 +1,11 @@
+<h1>Webmate: <%= `hostname` %></h1>
+
+<hr />
+
+Projekte:<br />
+
+<ul>
+	<% Webmate.projects.each { |project_name| %>
+		<li><a href="/project/<%= project_name %>/"><%= project_name %></a></li>
+	<% } %>
+</ul>
