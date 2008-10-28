@@ -34,6 +34,26 @@ class WebProject
     Dir[@path+"/#{path}/*#{ext}"].collect { |i| File.basename(i).gsub(ext,'') }
   end
   
+  
+  def read_stylesheet(name)
+    file = "#{@path}/resources/css/#{name}"
+    File.exists?(file) ? File.readlines(file) : "/* stylesheet '#{name}' not found! */"
+  end
+  
+  def read_javascript(name)
+    file = "#{@path}/resources/js/#{name}"
+    File.exists?(file) ? File.readlines(file) : "// javascript '#{name}' not found!"
+  end
+  
+  def read_media_file(file_path)
+    file = "#{@path}/resources/media/#{file_path}"
+    file.gsub("./",'').gsub("..",'').gsub("~",'')
+    ( File.exists?(file) && !File.directory?(file) ) ? File.readlines(file) : "// '#{file_path}' not found!"
+  end
+
+
+  def name;@meta["project_title"];end
+  def type;@meta["project_type"];end
 end
 
 class WebProject
@@ -64,4 +84,6 @@ class WebProject
     project_path = new_path if new_path
     new project_path
   end
+  
+  def self.load(name); new("#{Webmate.projects_path}/#{name}"); end
 end

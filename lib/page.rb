@@ -9,10 +9,11 @@ class WebPage
     new(name, project) if File.exists?(file_path)
   end
   
-  attr_accessor :name, :project
+  attr_accessor :name, :project, :render
   def initialize(name,project)
     @name = name
     @project = project
+    @render = WebmateRender.new self
   end
 
   def page_stylesheets
@@ -30,5 +31,5 @@ class WebPage
   def javascripts
     @project.stylesheets+page_javascripts
   end  
-  
+
 end

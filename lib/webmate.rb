@@ -16,8 +16,9 @@ module Webmate
   def self.projects
     Dir["#{@@projects_path}/*"].collect { |i| File.basename(i) } if @@projects_path
   end
-  
 end
 
 require File.dirname(__FILE__) + '/project.rb'
 require File.dirname(__FILE__) + '/page.rb'
+require File.dirname(__FILE__) + '/render.rb'
+require File.dirname(__FILE__) + '/../../github/javascript-bundle.git/lib/javascript-bundle.rb'
