@@ -12,6 +12,11 @@ module Webmate
   def self.projects_path(path=nil)
     @@projects_path = path if path && self.init_projects_path(path); return @@projects_path
   end
+  
+  def self.projects
+    Dir["#{@@projects_path}/*"].collect { |i| File.basename(i) } if @@projects_path
+  end
+  
 end
 
 require File.dirname(__FILE__) + '/project.rb'
