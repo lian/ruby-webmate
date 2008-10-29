@@ -6,7 +6,7 @@
 Layouts:<br />
 <ul>
 	<% @project.layouts.each { |name| %>
-		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+		<li><a href="/project/<%= @project.name %>/<%= name %>"><%= name %></a></li>
 	<% } %>
 </ul>
 
@@ -14,7 +14,7 @@ Layouts:<br />
 Seiten:<br />
 <ul>
 	<% @project.pages.each { |name| %>
-		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+		<li><a href="/project/<%= @project.name %>/<%= name %>"><%= name %></a></li>
 	<% } %>
 </ul>
 
@@ -23,7 +23,7 @@ Seiten:<br />
 Stylesheets:<br />
 <ul>
 	<% @project.stylesheets.each { |name| %>
-		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+		<li><a href="/project/<%= @project.name %>/<%= name %>"><%= name %></a></li>
 	<% } %>
 </ul>
 
@@ -32,6 +32,6 @@ Stylesheets:<br />
 Javascripts:<br />
 <ul>
 	<% @project.javascripts.each { |name| %>
-		<li><a href="/project/<%= @project.name %>/page/<%= name %>"><%= name %></a></li>
+		<li><a href="/project/<%= @project.name %>/<%= name %>"><%= name %></a></li>
 	<% } %>
 </ul>

@@ -17,12 +17,6 @@ describe WebPage do
       @project.pages.size.should == 2
       @project.pages.include?("foobar").should == true
     end
-    it "should include project stylesheets" do
-      @page.stylesheets.should == @project.stylesheets
-    end
-    it "should include project javascripts" do
-      @page.javascripts.should == @project.javascripts
-    end
   end
   
   it "should initalize project" do
@@ -35,13 +29,13 @@ describe WebPage do
 
 
   it "should be able to list stylesheets of page" do
-    @page.stylesheets.class.should == Array
-    @page.stylesheets.size.should > 0
+    @page.resources.stylesheets.class.should == Array
+    #@page.stylesheets.size.should > 0
   end
   
   it "should be able to list javascripts of page" do
-    @page.javascripts.class.should == Array
-    @page.javascripts.size.should > 0
+    @page.resources.javascripts.class.should == Array
+    #@page.javascripts.size.should > 0
   end
 
   it "does your work."

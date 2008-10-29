@@ -12,8 +12,9 @@ get "/" do
   erb :default
 end
 
-get "/project/:name.*/" do
-  name = params[:name]+".#{params[:splat].first}"
+#get "/project/:name.*/" do
+get "/project/*/" do
+  name = params[:splat].first
   
   if Webmate.projects.include? name
     @project = WebProject.new "#{Webmate.projects_path}/#{name}"
@@ -21,16 +22,16 @@ get "/project/:name.*/" do
   end
 end
 
-get "/project/:name.*/:page" do
-  name = params[:name]+".#{params[:splat].first}"
+#get "/project/:name.*/:page" do
+get "/project/*/:page" do
+  name = params[:splat].first
 
   if Webmate.projects.include? name
     @project = WebProject.new "#{Webmate.projects_path}/#{name}"
     
     if @project.pages.include? params[:page]
       @page = WebPage.new params[:page], @project
-      @page.render.dev
-      # @page.inspect
+      @page.render.render_html
     end
     
   end
