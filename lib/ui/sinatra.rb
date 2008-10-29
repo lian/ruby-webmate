@@ -3,16 +3,21 @@ require "yaml"
 require 'sinatra'
 require File.dirname(__FILE__) + "/../webmate.rb"
 require File.dirname(__FILE__) + "/../../../github/javascript-bundle.git/lib/adapter/sinatra.rb"
+require File.dirname(__FILE__) + "/../../../github/javascript-bundle.git/lib/extjs/adapter/sinatra.rb"
 
 JavascriptBundle::Backend::Sinatra.init
+JavascriptBundle::Ext::Backend::Sinatra.init
+
+require File.dirname(__FILE__) + "/extjs/project_window.rb"
+
 Webmate.projects_path "/Users/langschaedel/cc/webmate-projects"
+
 
 
 get "/" do
   erb :default
 end
 
-#get "/project/:name.*/" do
 get "/project/*/" do
   name = params[:splat].first
   
@@ -22,7 +27,6 @@ get "/project/*/" do
   end
 end
 
-#get "/project/:name.*/:page" do
 get "/project/*/:page" do
   name = params[:splat].first
 
