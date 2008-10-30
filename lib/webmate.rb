@@ -20,5 +20,5 @@ end
 
 require File.dirname(__FILE__) + '/project.rb'
 require File.dirname(__FILE__) + '/page.rb'
-require File.dirname(__FILE__) + '/render.rb'
+require File.dirname(__FILE__) + '/renderer/render_engine.rb'
 require File.dirname(__FILE__) + '/../../github/javascript-bundle.git/lib/javascript-bundle.rb'

@@ -20,7 +20,6 @@ end
 
 get "/project/*/" do
   name = params[:splat].first
-  
   if Webmate.projects.include? name
     @project = WebProject.new "#{Webmate.projects_path}/#{name}"
     erb :project_base
@@ -29,15 +28,12 @@ end
 
 get "/project/*/:page" do
   name = params[:splat].first
-
   if Webmate.projects.include? name
     @project = WebProject.new "#{Webmate.projects_path}/#{name}"
-    
     if @project.pages.include? params[:page]
       @page = WebPage.new params[:page], @project
-      @page.render.render_html
+      RenderEngine.run @page
     end
-    
   end
 end
 
