@@ -27,44 +27,42 @@ class WebPage
 
   def refresh_resources;render_erb;true;end
 
-  #def page_stylesheets
-  #  @resources.stylesheets
-  #end
-
-  #def stylesheets
-  #  @project.stylesheets+page_stylesheets
-  #end
-  
-  #def page_javascripts
-  #  @resources.javascripts
-  #end
-  
-  # def javascripts
-  #   @project.stylesheets+page_javascripts
-  # end  
-
   def erb_path; @project.path+"/pages/#{@name}.erb"; end
 end
 
+module PageResourcesHelper
+  def layout(name=nil);
+    @resources[:layout] = name if name
+    @resources[:layout]
+  end
+  
+  def javascript(name) require_resources :javascript, name; end
+  def javascripts;@resources[:javascript].uniq;end
+
+  def stylesheet(name) require_resources :stylesheet, name; end
+  def stylesheets;@resources[:stylesheet].uniq;end
+
+  def partial(name) require_resources :partial, name; end
+  def partials;@resources[:partial].uniq;end
+  
+  def require_resources(type,resources=[])
+    case resources.class
+    when Array
+      resources.each { |resource_name| @resources[type] << resource_name.to_s unless @resources[type].include?(resource_name.to_s) }
+    else
+      @resources[type] << resources.to_s unless @resources[type].include?(resources.to_s)
+    end
+  end
+end
 
 class PageResources
   attr_accessor :resources
   def initialize
     @resources = { :javascript => [], :stylesheet => [], :layout => nil }
   end
-  def layout(name=nil);
-    @resources[:layout] = name if name
-    @resources[:layout]
-  end
-  def javascript(name)
-    @resources[:javascript] << name unless @resources[:javascript].include?(name)
-  end
-  def javascripts;@resources[:javascript];end
-  def stylesheet(name);
-    @resources[:stylesheet] << name unless @resources[:stylesheet].include?(name)
-  end
-  def stylesheets;@resources[:stylesheet];end
   
-  def inspect;@resources.inspect;end
+  include PageResourcesHelper
+  
   def get_binding;binding;end
+  def inspect;@resources.inspect;end
 end
