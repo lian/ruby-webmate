@@ -41,7 +41,7 @@ module HTMLResourcesHelper
         lib.render_html
       end
     }.join("\n")
-    [%{<!-- development_envoirment: begin -->}, html + %{<!-- development_envoirment: end -->}].join("\n")
+    [%{<!-- development_envoirment: begin -->}, html + %{<!-- development_envoirment: end -->}, load_development_scripts].join("\n")
   end
 
   def require_stylesheets
@@ -50,4 +50,38 @@ module HTMLResourcesHelper
     }.join("\n")
     [%{<!-- require_stylesheets: begin -->}, html, %{<!-- require_stylesheets: end -->}].join("\n")
   end
+  
+  def load_development_scripts
+    %{
+<script type="text/javascript" charset="utf-8">
+      var project_window = null;
+
+      document.onkeydown = function(event){
+      	if ((event.keyCode == 73) && (event.ctrlKey)) {
+      	  
+      	   if (!project_window) {
+      	     Rb.request("/javascript-bundle-ext/project_window/init?project=#{@page.project.name}")
+      	   } else {
+      	  	if (project_window.hidden) {
+      	     		project_window.show(document.body);
+      	        Rb.request("/javascript-bundle-ext/project_window/init?project=#{@page.project.name}")
+      	  	} else {
+      	     		project_window.hide()
+      	  	}
+      	   }
+      	  //event.cancelBubble = true; event.keyCode = false;
+      	  event.returnValue = false;
+      	  return false;
+      	}
+
+      	if ((event.keyCode == 69) && (event.ctrlKey)) {
+      		//Rb.project_request("sitemap_window/edit?type=page&name="+document.body.id);
+          Rb.request("/javascript-bundle-ext/project_window/edit?project=#{@page.project.name}&type=page&name=#{@page.name}")
+      	}
+
+      }
+</script>
+    }
+  end
+  
 end
