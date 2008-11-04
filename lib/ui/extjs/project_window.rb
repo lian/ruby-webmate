@@ -225,6 +225,36 @@ class ProjectWindow
   #   
   # end
 
+  def self.handle_gitk(params,scope)
+    if Webmate.projects.include? params[:project]
+      if project = WebProject.load(params[:project])
+        system "cd #{project.path}; gitk &" # project.git.open_gitk
+        return %{ console.log("gitk for project: #{params[:project]} geöffnet") }
+      end
+    end
+  end
+
+  def self.handle_create_project(params,scope)
+    if params[:name] && (params[:name] != "")
+
+      if Webmate.create_project params[:name]
+        return %{ console.log("new project: #{name} angelegt") }
+      else
+        return %{ console.log("new project: #{name} error") }
+      end
+      
+    else
+      %{
+        function handleNewProject (a,b){
+          //if !(a=="cancel") {
+            Rb.ext("project_window/create_project?name="+b)
+          //}
+        };
+        Ext.MessageBox.prompt('New Project', 'Please enter a name:', handleNewProject );
+      }
+    end
+  end
+
 end
 
 JavascriptBundle::Ext::Backend::Widgets.add ProjectWindow, "project_window"

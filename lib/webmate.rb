@@ -16,6 +16,10 @@ module Webmate
   def self.projects
     Dir["#{@@projects_path}/*"].collect { |i| File.basename(i) } if @@projects_path
   end
+  
+  def self.create_project(name)
+    WebProject.create(name) unless self.projects.include?(name)
+  end
 end
 
 require File.dirname(__FILE__) + '/project.rb'
