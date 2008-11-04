@@ -224,7 +224,6 @@ class ProjectWindow
   #   end
   #   
   # end
-  
 
 end
 

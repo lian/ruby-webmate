@@ -4,8 +4,20 @@
 
 Projekte:<br />
 
+<style type="text/css" media="screen">
+	ul li {
+		border: 1px solid #999;
+		padding:10px;
+		margin:15px;
+	}
+</style>
+
 <ul>
-	<% Webmate.projects.each { |project_name| %>
-		<li><a href="/project/<%= project_name %>/"><%= project_name %></a></li>
+	<% Webmate.projects.each { |project_name| project = WebProject.new "#{Webmate.projects_path}/#{project_name}";  %>
+		<li>
+			<a href="/project/<%= project_name %>/"><%= project_name %></a>
+			<br />
+			<%= project.git.last_commit.inspect %>
+		</li>
 	<% } %>
 </ul>

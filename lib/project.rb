@@ -1,8 +1,9 @@
 class WebProject
-  attr_accessor :path, :meta
+  attr_accessor :path, :meta, :git
   def initialize(path)
     @path = path
     init_config
+    @git = WebProjectGit.new self
   end
   
   def init_config
@@ -86,4 +87,19 @@ class WebProject
   end
   
   def self.load(name); new("#{Webmate.projects_path}/#{name}"); end
+end
+
+
+class WebProjectGit
+  def initialize(project)
+    @project = project
+  end
+  def last_commit
+    log = `git log master -1`.split("\n")
+    { 
+      :commit => log[0].gsub("commit ",''),
+      :author => log[1].gsub("Author: ",''),
+      :date => log[2].gsub("Date:  ",''),
+    }
+  end
 end
