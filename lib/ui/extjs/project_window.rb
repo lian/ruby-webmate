@@ -3,19 +3,6 @@ class ProjectTree
     @project = project
   end
 
-  def page_on(type)
-    case type
-      when :new
-        JavascriptBundle::Ext::Handler.new %{ console.log("implement add page dialog") }
-      when :show
-        JavascriptBundle::Ext::Handler.new %{ Rb.ext("project_window/edit?project=#{@project.name}&page="+this.node.text); }
-      when :edit
-        JavascriptBundle::Ext::Handler.new %{ Rb.ext("project_window/edit?project=#{@project.name}&page="+this.node.text); }
-      else
-        JavascriptBundle::Ext::Handler.new %{ console.log("callback #{type} für "+this.node.text+" nicht gefunden..") }
-    end
-  end
-
   def delegate_menu_event(type,event)
     # types => :page, :stylesheet, :layout, javascript...
     case event
@@ -225,20 +212,80 @@ class ProjectWindow
   #   
   # end
 
-  def self.handle_gitk(params,scope)
+  def self.handle_open_gitk(params,scope)
     if Webmate.projects.include? params[:project]
       if project = WebProject.load(params[:project])
         system "cd #{project.path}; gitk &" # project.git.open_gitk
-        return %{ console.log("gitk for project: #{params[:project]} geöffnet") }
+        return %{ console.log("gitk: #{params[:project]} geöffnet") }
       end
     end
   end
+
+  # def self.handle_create_page(params,scope)
+  #   if Webmate.projects.include? params[:project]
+  #     if project = WebProject.load(params[:project])
+  #       
+  #       if params[:new_page_name] && (params[:new_page_name] != "")
+  #         
+  #         if project.resources.create_page params[:new_page_name]
+  #           return %{ console.log("new page for #{project.name}: #{params[:new_page_name]} created") }
+  #         else
+  #           return %{ console.log("new page for #{project.name}: #{params[:new_page_name]} error") }
+  #         end
+  #       else
+  #         %{
+  #           function handleNewPage (a,b){
+  #             if ( a != "cancel") {
+  #               Rb.ext("project_window/create_page?project=#{project.name}&new_page_name="+b)
+  #             }
+  #           };
+  #           Ext.MessageBox.prompt('New Page for #{project.name}', 'Please enter a name:', handleNewPage );
+  #         }
+  #       end
+  #       
+  #     end
+  #   end
+  # end
+
+
+  def self.handle_create_resource(params,scope)
+    if Webmate.projects.include? params[:project]
+      if project = WebProject.load(params[:project])
+        
+        if params[:resource_name] && (params[:resource_name] != "") && params[:resource_type]
+          
+          if project.resources.create(params[:resource_type], params[:resource_name])
+            return %{ console.log("#{project.name}: new #{params[:resource_type]}: #{params[:resource_name]}") }
+          else
+            return %{ console.log("#{project.name}: new #{params[:resource_type]}: #{params[:resource_name]} - ERROR") }
+          end
+          
+        else
+          if project.resources.scheme.keys.include? params[:resource_type].to_sym
+            resource_type = "&resource_type=#{params[:resource_type]}"
+            %{
+              function handleDialog (a,b){
+                if ( a != "cancel") {
+                  Rb.ext("project_window/create_resource?project=#{project.name}#{resource_type}&resource_name="+b)
+                }
+              };
+              Ext.MessageBox.prompt('New #{params[:resource_type]} for #{project.name}', 'Please enter a name:', handleDialog );
+            }
+          else
+            return %{ console.log("#{project.name}: create_resource #{params[:resource_type]} #{params[:resource_name]} - no #{params[:resource_type]} found ERROR") }
+          end
+        end
+        
+      end
+    end
+  end
+
 
   def self.handle_create_project(params,scope)
     if params[:name] && (params[:name] != "")
 
       if Webmate.create_project params[:name]
-        return %{ console.log("new project: #{name} angelegt") }
+        return %{ console.log("new project: #{name} created") }
       else
         return %{ console.log("new project: #{name} error") }
       end
@@ -246,9 +293,9 @@ class ProjectWindow
     else
       %{
         function handleNewProject (a,b){
-          //if !(a=="cancel") {
+          if (a != "cancel") {
             Rb.ext("project_window/create_project?name="+b)
-          //}
+          }
         };
         Ext.MessageBox.prompt('New Project', 'Please enter a name:', handleNewProject );
       }

@@ -9,15 +9,15 @@ describe WebPage do
     @page = WebPage.new "index", @project
   end
 
-  describe "when creating new page" do
-    before(:each) do
-      @project.page_create "foobar"
-    end
-    it "should add page to project" do
-      @project.pages.size.should == 2
-      @project.pages.include?("foobar").should == true
-    end
-  end
+  # describe "when creating new page" do
+  #   before(:each) do
+  #     @project.page_create "foobar"
+  #   end
+  #   it "should add page to project" do
+  #     @project.pages.size.should == 2
+  #     @project.pages.include?("foobar").should == true
+  #   end
+  # end
   
   it "should initalize project" do
     @page.project.should ==  @project
