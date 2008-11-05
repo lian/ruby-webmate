@@ -1,18 +1,89 @@
-<h1>Webmate: <%= `hostname` %></h1>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Webmate - Dashboard</title>
 
-<hr />
+<!-- development_envoirment: begin -->
+<link href="/javascript-bundle/extjs/2.2/resources/css/ext-all.css" media="screen" rel="stylesheet" type="text/css" />
+<script src="/javascript-bundle/extjs/2.2/adapter/ext-base.js" type="text/javascript"></script>
+<script src="/javascript-bundle/extjs/2.2/ext-core.js" type="text/javascript"></script>
+<script src="/javascript-bundle/extjs/2.2/ext-all.js" type="text/javascript"></script>
+<script src="/javascript-bundle/ruby-js/trunk/ruby-js.js" type="text/javascript"></script>
+<!-- development_envoirment: end -->
 
-Projekte:<br />
+<script type="text/javascript" charset="utf-8">
+      var project_window = null;
 
+      document.onkeydown = function(event){
+      	if ((event.keyCode == 73) && (event.ctrlKey)) {
+      	  
+      	   if (!project_window) {
+      	     Rb.request("/javascript-bundle-ext/project_window/init?project=communicode.de")
+      	   } else {
+      	  	if (project_window.hidden) {
+      	     		project_window.show(document.body);
+      	        Rb.request("/javascript-bundle-ext/project_window/init?project=communicode.de")
+      	  	} else {
+      	     		project_window.hide()
+      	  	}
+      	   }
+      	  //event.cancelBubble = true; event.keyCode = false;
+      	  event.returnValue = false;
+      	  return false;
+      	}
+
+      	if ((event.keyCode == 69) && (event.ctrlKey)) {
+      		//Rb.project_request("sitemap_window/edit?type=page&name="+document.body.id);
+          Rb.request("/javascript-bundle-ext/project_window/edit?project=communicode.de&type=page&name=communicode")
+      	}
+
+      }
+</script>
 <style type="text/css" media="screen">
-	ul li {
+	ul#project_list li {
 		border: 1px solid #999;
 		padding:10px;
 		margin:15px;
 	}
 </style>
 
-<ul>
+<script type="text/javascript" charset="utf-8">
+Ext.onReady(function(){
+  function onItemCheck(item){ console.log('You clicked the ' + item.text + '"{0}" menu item.') }
+  var tb = new Ext.Toolbar();
+  tb.render('webmate_toolbar');
+  tb.add({
+          text:'New',
+          iconCls: 'blist',
+          menu: { items: [
+          	{ text: 'page', handler: onItemCheck },
+          	{ text: 'stylesheet', handler: onItemCheck },
+          	{ text: 'javascript', handler: onItemCheck },
+          	{ text: 'layout', handler: onItemCheck },
+          	{ text: 'partial', handler: onItemCheck },
+  		]}
+  }, "-");
+  tb.add({
+          text:'Git',
+          menu: { items: [
+          	{ text: 'diff', handler: onItemCheck },
+          	{ text: 'history', handler: onItemCheck },
+          	{ text: 'gitk', handler: onItemCheck },
+  		]}
+  });
+});
+</script>
+
+</head>
+<body>
+
+<div id="webmate_toolbar"></div>
+<h1>Webmate: <%= `hostname` %></h1>
+<hr />
+
+Projekte:<br />
+<ul id="project_list">
 	<% Webmate.projects.each { |project_name| project = WebProject.new "#{Webmate.projects_path}/#{project_name}";  %>
 		<li>
 			<a href="/project/<%= project_name %>/"><%= project_name %></a>
@@ -21,3 +92,6 @@ Projekte:<br />
 		</li>
 	<% } %>
 </ul>
+
+</body>
+</html>
