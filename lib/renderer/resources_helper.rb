@@ -85,7 +85,7 @@ module HTMLResourcesHelper
 </script>
     }
   end
-  
+
   def render_git_status
     div = { :class => "" }
     html = ""
@@ -96,7 +96,8 @@ module HTMLResourcesHelper
     else
       div[:class] = "green"
       html += "unchanged: #{@page.name}.erb - "
-      html += @page.project.git.last_commit.inspect
+      commit = @page.project.git.last_commit
+      html += "changed by #{commit[:author]} - #{commit[:date]}"
     end
     %{<div class="#{div[:class]}" style="border:#{div[:class]} 1px solid; padding:10px" id="webmate_page_git_status">#{html}</div>}
   end
