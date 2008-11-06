@@ -1,7 +1,7 @@
 module PageResourcesHelper
   def layout(name=nil);
     @resources[:layout] = name if name
-    @resources[:layout] || "default"
+    @resources[:layout]
   end
   
   def javascript(name) require_resources :javascript, name; end
@@ -60,13 +60,13 @@ module HTMLResourcesHelper
       	if ((event.keyCode == 73) && (event.ctrlKey)) {
       	  
       	   if (!project_window) {
-      	     Rb.request("/javascript-bundle-ext/project_window/init?project=#{@page.project.name}")
+             Rb.request("/javascript-bundle-ext/project_window/init?project=#{@page.project.name}&page=#{@page.name}")
       	   } else {
       	  	if (project_window.hidden) {
-      	     		project_window.show(document.body);
-      	        Rb.request("/javascript-bundle-ext/project_window/init?project=#{@page.project.name}")
+      	      project_window.show(document.body);
+      	      Rb.request("/javascript-bundle-ext/project_window/init?project=#{@page.project.name}&page=#{@page.name}")
       	  	} else {
-      	     		project_window.hide()
+      	     	project_window.hide()
       	  	}
       	   }
       	  //event.cancelBubble = true; event.keyCode = false;
