@@ -10,7 +10,10 @@ class ProjectTree
         JavascriptBundle::Ext::Handler.new %{ Rb.ext("project_window/edit?project=#{@project.name}&type=#{type}&name="+this.node.text); }
       when :new
         # JavascriptBundle::Ext::Handler.new %{ Rb.ext("project_window/new_page?project=#{@project.name}&#{type}="+this.node.text); }
-        JavascriptBundle::Ext::Handler.new %{ console.log("implement add page dialog") }
+        JavascriptBundle::Ext::Handler.new %{
+          console.log(".. new #{type.to_s} dialog");
+          Rb.ext("project_window/create_resource?project=#{@project.name}&resource_type=#{type.to_s}")
+        }
       when :show
         if type == :page
           JavascriptBundle::Ext::Handler.new %{
@@ -64,10 +67,58 @@ class ProjectTree
     }
     parent_node
   end
+
+  def build_page_resoures_nodes(page_name)
+    page = WebPage.new(page_name, @project)
+    nodes = []
+
+
+    nodes << {
+      :text => page.resources.layout, :id => "layout-node-#{page.resources.layout}", :expanded => false, :children => [],
+      :listeners => { :contextmenu => { :fn => context_menu(:layout, page.resources.layout) } }
+    }
+
+    # add javascript resources
+    nodes += page.resources.javascripts.collect do |resource_name|
+      resource_name = resource_name.to_s
+      puts "build_page_resoures_nodes: resource_name #{resource_name}"
+      {
+        :text => "#{resource_name}.js", :id => "javascript-node-#{resource_name}", :expanded => false, :children => [],
+        :listeners => { :contextmenu => { :fn => context_menu(:javascript, resource_name) } }
+      }
+    end
+    # add stylesheet resources
+    nodes += page.resources.stylesheets.collect do |resource_name|
+      resource_name = resource_name.to_s
+      puts "build_page_resoures_nodes: resource_name #{resource_name}"
+      {
+        :text => "#{resource_name}.css", :id => "stylesheet-node-#{resource_name}", :expanded => false, :children => [],
+        :listeners => { :contextmenu => { :fn => context_menu(:stylesheet, resource_name) } }
+      }
+    end
+    nodes
+  end
+
+  def build_page_nodes(type,items,title=nil,expanded=false)
+    root_node = { :text => (title || type.to_s), :expanded => expanded, :children => [], :listeners => { :contextmenu => { :fn => context_menu("#{type.to_s}s".to_sym) } } }
+    items.each { |page_name|
+      page_name = page_name.to_s
+      root_node[:children] << { 
+        :text => page_name,
+        :id => "#{type.to_s}-node-#{page_name}",
+        :expanded => false,
+        :children => build_page_resoures_nodes(page_name),
+        :listeners => { :contextmenu => { :fn => context_menu(type, page_name) }, }
+      }
+    }
+    root_node
+  end
   
   def build_tree
     tree_root = { :text => "root", :expanded => true, :children => [] }
-    tree_root[:children] << build_nodes(:page, @project.pages, "html", true )
+    #tree_root[:children] << build_nodes(:page, @project.pages, "html", true )
+    tree_root[:children] << build_page_nodes(:page, @project.pages, "html", true )
+    #tree_root[:children] << build_controller_nodes(:controller, @project.pages, "controller", true )
     tree_root[:children] << build_nodes(:stylesheet, @project.stylesheets, "css", true )
     tree_root[:children] << build_nodes(:javascript, @project.javascripts, "js", true )
     # tree_root[:children] << build_nodes(:layout, @project.layout_list, "layout" )
@@ -87,6 +138,11 @@ class ProjectTree
                                :autoScroll => true,
                                :root => JavascriptBundle::Ext::Tree::AsyncTreeNode.new( build_tree ),
                                # :resizeable => true
+                               :tools => [
+                                 { :id => "refresh",
+                                   :on => { :click => JavascriptBundle::Ext::Handler.new(%{ console.log("refresh called..") }) }
+                                 }
+                               ]
                             })
   end
 end
@@ -109,7 +165,7 @@ class ProjectWindow
                                       :width => 200, :height => 300, :plain => true,
                                       :items => [ tree_panel ],
                                       #:items => [ { :html => "<b>hello</b>"} ],
-                                      :title => "Project Window",
+                                      :title => @project.name,
                                       :closable => true, :closeAction => 'hide' )
                                       
     %{
@@ -148,14 +204,19 @@ class ProjectWindow
 
         if type_map.keys.include? params[:type]
           unless params[:name] == ""
+            extname = type_map[params[:type]]
+            params[:name] = "#{params[:name]}.#{extname}" unless params[:name].downcase.match(/.\.#{extname}$/)
+            
             #file_path = "#{@project.path}/#{params[:type]}/#{params[:name]}.#{type_map[params[:type]]}"
             case params[:type]
             when "page"
-              file_path = "#{@project.path}/pages/#{params[:name]}.#{type_map[params[:type]]}"
+              file_path = "#{@project.path}/pages/#{params[:name]}"
+            when "layout"
+              file_path = "#{@project.path}/pages/_layout/#{params[:name]}"
             when "stylesheet"
-              file_path = "#{@project.path}/resources/css/#{params[:name]}.#{type_map[params[:type]]}"
+              file_path = "#{@project.path}/resources/css/#{params[:name]}"
             when "javascript"
-              file_path = "#{@project.path}/resources/js/#{params[:name]}.#{type_map[params[:type]]}"
+              file_path = "#{@project.path}/resources/js/#{params[:name]}"
             else
               file_path = nil
             end
@@ -169,6 +230,7 @@ class ProjectWindow
                   "console.log('#{params[:name]} hat sich in textmate geöffnet und kann jetzt bearbeitet werden.')"
               end
             else
+              puts "!!!!!not found: #{file_path} ==> #{params.inspect}"
               "console.log('#{params[:name]} wurde nicht gefunden. :(')"
             end
           end
@@ -247,7 +309,8 @@ class ProjectWindow
   #   end
   # end
 
-
+  #     show dialog: Rb.ext("project_window/create_resource?project=#{project.name}#{resource_type}")
+  # create callback: Rb.ext("project_window/create_resource?project=#{project.name}#{resource_type}&resource_name="+resource_name)
   def self.handle_create_resource(params,scope)
     if Webmate.projects.include? params[:project]
       if project = WebProject.load(params[:project])
@@ -264,9 +327,9 @@ class ProjectWindow
           if project.resources.scheme.keys.include? params[:resource_type].to_sym
             resource_type = "&resource_type=#{params[:resource_type]}"
             %{
-              function handleDialog (a,b){
-                if ( a != "cancel") {
-                  Rb.ext("project_window/create_resource?project=#{project.name}#{resource_type}&resource_name="+b)
+              function handleDialog (button,resource_name){
+                if ( button != "cancel") {
+                  Rb.ext("project_window/create_resource?project=#{project.name}#{resource_type}&resource_name="+resource_name)
                 }
               };
               Ext.MessageBox.prompt('New #{params[:resource_type]} for #{project.name}', 'Please enter a name:', handleDialog );

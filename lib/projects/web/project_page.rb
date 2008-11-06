@@ -16,3 +16,15 @@ class WebPage
   def refresh_resources;render_erb;true;end
   def erb_path; @project.path+"/pages/#{@name}.erb"; end
 end
+
+# class PageResources
+#   attr_accessor :resources
+#   def initialize
+#     @resources = { :javascript => [], :stylesheet => [], :layout => nil }
+#   end
+#   
+#   include PageResourcesHelper
+#   
+#   def get_binding;binding;end
+#   def inspect;@resources.inspect;end
+# end

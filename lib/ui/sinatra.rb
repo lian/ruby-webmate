@@ -10,7 +10,7 @@ JavascriptBundle::Ext::Backend::Sinatra.init
 
 require File.dirname(__FILE__) + "/extjs/project_window.rb"
 
-Webmate.projects_path "/Users/langschaedel/cc/webmate-projects"
+Webmate.projects_path "/Volumes/data/lang/webmate-projects"
 
 
 
@@ -36,6 +36,12 @@ get "/project/*/:page" do
     end
   end
 end
+
+get "/preview/project/*/:page" do
+  # ..
+  # RenderEngine.run @page, :production
+end
+
 
 get "/project/*/css/*" do
   content_type 'text/css', :charset => 'utf-8'

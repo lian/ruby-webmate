@@ -1,7 +1,7 @@
 module PageResourcesHelper
   def layout(name=nil);
     @resources[:layout] = name if name
-    @resources[:layout]
+    @resources[:layout] || "default"
   end
   
   def javascript(name) require_resources :javascript, name; end
@@ -83,5 +83,15 @@ module HTMLResourcesHelper
 </script>
     }
   end
+  
+  
+  def render_git_status
+    %{
+<div id="webmate_page_git_status">
+  #{@page.project.git.last_commit.inspect}
+</div>
+    }
+  end
+  
   
 end
