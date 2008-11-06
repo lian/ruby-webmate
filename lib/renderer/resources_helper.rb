@@ -98,7 +98,7 @@ module HTMLResourcesHelper
       html += "unchanged: #{@page.name}.erb - "
       html += @page.project.git.last_commit.inspect
     end
-    %{<div class="#{div[:class]}" id="webmate_page_git_status">#{html}</div>}
+    %{<div class="#{div[:class]}" style="border:#{div[:class]} 1px solid; padding:10px" id="webmate_page_git_status">#{html}</div>}
   end
   
 end

@@ -311,7 +311,10 @@ class ProjectWindow
     if Webmate.projects.include? params[:project]
       if project = WebProject.load(params[:project])
         if project.git.commit_page(params[:name])
-          return %{ console.log("gesichert..") }
+          return %{
+            console.log("gesichert. ..weiterleitung/page-refresh")
+            window.location.href = #{params[:name].to_json};
+          }
         else
           return %{ console.log("fehler beim sichern..") }
         end
