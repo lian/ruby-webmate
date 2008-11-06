@@ -4,7 +4,7 @@ class WebPage
     @name = name
     @project = project
     #@render = WebmateRender.new self
-    @resources = PageResources.new
+    @resources = PageResources.new self
     refresh_resources
   end
   

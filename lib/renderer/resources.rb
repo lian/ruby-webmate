@@ -23,8 +23,9 @@ end
 
 class PageResources
   attr_accessor :resources
-  def initialize
+  def initialize(page_scope)
     @resources = { :javascript => [], :stylesheet => [], :layout => nil }
+    @page = page_scope
   end
   
   include PageResourcesHelper

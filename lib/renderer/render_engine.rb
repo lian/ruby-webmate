@@ -35,7 +35,8 @@ class RenderEngine
   end
 
   def render_layout_erb
-    layout_name = @page.resources.layout || "default"
+    layout_name = @page.resources.layout
+    layout_name = layout_name || (layout_name == :none) ||"default"
     layout_path = "#{@page.project.path}/pages/_layout/#{layout_name}.erb"
     if File.exists?(layout_path)
       content = open(layout_path).read

@@ -122,7 +122,8 @@ class ProjectTree
   def build_tree
     tree_root = { :text => "root", :expanded => true, :children => [] }
     #tree_root[:children] << build_nodes(:page, @project.pages, "html", true )
-    tree_root[:children] << build_page_nodes(:page, @project.pages, "html", true )
+    tree_root[:children] << build_page_nodes(:page, @project.pages, "page", true )
+    tree_root[:children] << build_nodes(:layout, @project.layouts, "layout", false )
     #tree_root[:children] << build_controller_nodes(:controller, @project.pages, "controller", true )
     tree_root[:children] << build_nodes(:stylesheet, @project.stylesheets, "css", false )
     tree_root[:children] << build_nodes(:javascript, @project.javascripts, "js", false )
@@ -301,6 +302,19 @@ class ProjectWindow
       if project = WebProject.load(params[:project])
         system "cd #{project.path}; gitk &" # project.git.open_gitk
         return %{ console.log("gitk: #{params[:project]} geöffnet") }
+      end
+    end
+  end
+  
+  def self.handle_commit(params,scope)
+    # params: project, name|resource_name, type|resource_type
+    if Webmate.projects.include? params[:project]
+      if project = WebProject.load(params[:project])
+        if project.git.commit_page(params[:name])
+          return %{ console.log("gesichert..") }
+        else
+          return %{ console.log("fehler beim sichern..") }
+        end
       end
     end
   end

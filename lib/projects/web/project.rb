@@ -46,7 +46,7 @@ end
 
 class WebProject
   DIR_STRUCTURE = ["","pages","pages/_layout","pages/_partial","resources","resources/css","resources/js","resources/media"]
-  FILE_STRUCTURE = ["pages/index.erb","pages/_layout/layout.erb","resources/css/default.css","resources/js/default.js"]
+  FILE_STRUCTURE = ["pages/index.erb","pages/_layout/default.erb","resources/css/default.css","resources/js/default.js"]
   
   def self.generate_default_files_and_directories(project_path)
     DIR_STRUCTURE.each  { |dir_path| tmp_path = "#{project_path}/#{dir_path}"; Dir.mkdir(tmp_path) unless File.exists?(tmp_path) }
