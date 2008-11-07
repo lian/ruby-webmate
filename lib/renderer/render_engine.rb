@@ -61,7 +61,8 @@ HTML_TEMPLATE = %{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.
 
 </head>
 <body>
-<%= render_git_status %>
 <%= render_layout %>
+
+<!-- webmate: git-status begin --><%= render_git_status %><!-- webmate: git-status end --> 
 </body>
 </html>}
