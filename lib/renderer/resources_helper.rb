@@ -139,7 +139,7 @@ module HTMLResourcesHelper
       # html += "changed #{distance_of_time_in_words commit[:date], Time.now, true} ago - #{commit[:author]}"
       html += "changed by #{commit[:author]} - #{commit[:date]}"
     end
-    %{<div class="#{div[:class]}" style="position:absolute;right:0px;z-index:1000;border:#{div[:class]} 1px solid; padding:10px;background-color:#999" id="webmate_page_git_status">#{html}</div>}
+    %{<div class="#{div[:class]}" style="position:absolute;top:0px;right:0px;z-index:1000;border:#{div[:class]} 1px solid; padding:10px;background-color:#999" id="webmate_page_git_status">#{html}</div>}
   end
   
 end
