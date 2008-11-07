@@ -4,21 +4,21 @@ module PageResourcesHelper
     @resources[:layout]
   end
   
-  def javascript(name) require_resources :javascript, name; end
+  def javascript(*args) require_resources :javascript, args; end
   def javascripts;@resources[:javascript].uniq;end
 
-  def stylesheet(name) require_resources :stylesheet, name; end
+  def stylesheet(*args) require_resources :stylesheet, args; end
   def stylesheets;@resources[:stylesheet].uniq;end
 
   def partial(name) require_resources :partial, name; end
   def partials;@resources[:partial].uniq;end
   
   def require_resources(type,resources=[])
-    case resources.class
-    when Array
-      resources.each { |resource_name| @resources[type] << resource_name.to_s unless @resources[type].include?(resource_name.to_s) }
-    else
-      @resources[type] << resources.to_s unless @resources[type].include?(resources.to_s)
+    case resources
+      when Array
+        resources.each { |resource_name| @resources[type] << resource_name.to_s unless @resources[type].include?(resource_name.to_s) }
+      else
+        @resources[type] << resources.to_s unless @resources[type].include?(resources.to_s)
     end
   end
 end
