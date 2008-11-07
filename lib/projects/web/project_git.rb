@@ -1,6 +1,7 @@
 require "git"
 
 class WebProjectGit
+  attr_accessor :git
   def initialize(project)
     @project = project
     init_git
@@ -24,9 +25,12 @@ class WebProjectGit
       { 
         :commit => log[0].gsub("commit ",''),
         :author => log[1].gsub("Author: ",''),
-        :date => log[2].gsub("Date:  ",''),
+        :date => log[2].gsub("Date:   ",''),
       } 
     end
+    # if log = @git.log.first
+    #   { :commit => log.sha, :author => log.author.name, :date => log.date } 
+    # end
   end
   
   def modified_page_resource(page)

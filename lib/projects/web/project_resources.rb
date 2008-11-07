@@ -32,10 +32,13 @@ class WebProjectResources
   def create_resource(type,name)
     if scheme = RESOURCES_SCHEME[type.to_sym]
       return nil if file_list(scheme).include?(name)
-      file_path = File.join(@project.path, scheme[0], "#{name}#{scheme[1]}")
+      file_path = File.join(scheme[0], "#{name}#{scheme[1]}")
       default_template = "#{scheme[2]} #{type.to_s}: #{name}#{scheme[1]} #{scheme[3]}\n#{RESOURCES_TEMPLATE[type.to_sym]}"
-      File.open(file_path,"wb") { |f| f.print(default_template) }
-      commit_files( file_path, "new #{type.to_s}: #{name}" )
+      File.open(File.join(@project.path,file_path),"wb") { |f| f.print(default_template) }
+      
+      @project.git.git.add(file_path)
+      @project.git.git.commit("new #{type.to_s}: #{name}")
+      # commit_files( file_path, "new #{type.to_s}: #{name}" )
     end
   end
 

@@ -25,9 +25,10 @@ end
 
 module HTMLResourcesHelper
   def require_javascripts
-    list = (@page.resources.javascripts.size == 0) ? ["default"] : @page.resources.javascripts
-    html = (@resources[:javascript] + list).uniq.collect { |js|
-      if @page.project.javascripts.include?(js)
+    page_js = (@page.resources.javascripts.size == 0) ? ["default"] : @page.resources.javascripts
+    layout_js = @resources[:javascript].select { |i| !page_js.include?(i) }
+    html = (layout_js + page_js).uniq.collect { |js|
+      if @project.javascripts.include?(js)
         %{<script src="/project/#{@page.project.name}/js/#{js}.js" type="text/javascript" charset="utf-8"></script>}
       elsif lib = JavascriptBundle.find(js)
         lib.render_html
@@ -46,9 +47,14 @@ module HTMLResourcesHelper
   end
 
   def require_stylesheets
-    list = (@page.resources.stylesheets.size == 0) ? ["default"] : @page.resources.stylesheets
-    html = (@resources[:stylesheet] + list).uniq.collect { |css|
-      %{<link rel="stylesheet" type="text/css" href="/project/#{@page.project.name}/css/#{css}.css" />}
+    page_css = (@page.resources.stylesheets.size == 0) ? ["default"] : @page.resources.stylesheets
+    layout_css = @resources[:stylesheet].select { |i| !page_css.include?(i) }
+    html = (layout_css + page_css).uniq.collect { |css|
+      if @project.stylesheets.include?(css)
+        %{<link rel="stylesheet" type="text/css" href="/project/#{@page.project.name}/css/#{css}.css" />}
+      elsif lib = JavascriptBundle.find(css)
+        lib.render_html
+      end
     }.join("\n")
     [%{<!-- require_stylesheets: begin -->}, html, %{<!-- require_stylesheets: end -->}].join("\n")
   end
@@ -94,7 +100,6 @@ module HTMLResourcesHelper
   #  end
   #end
 
-
   def render_git_status
     div = { :class => "" }
     html = ""
@@ -131,9 +136,10 @@ module HTMLResourcesHelper
       div[:class] = "green"
       commit = @page.project.git.last_commit
       html += "#{commit[:commit][0..5]} #{@page.name}.erb - <a href='#'>diff</a> - "
+      # html += "changed #{distance_of_time_in_words commit[:date], Time.now, true} ago - #{commit[:author]}"
       html += "changed by #{commit[:author]} - #{commit[:date]}"
     end
-    %{<div class="#{div[:class]}" style="border:#{div[:class]} 1px solid; padding:10px" id="webmate_page_git_status">#{html}</div>}
+    %{<div class="#{div[:class]}" style="position:absolute;right:0px;z-index:1000;border:#{div[:class]} 1px solid; padding:10px;background-color:#999" id="webmate_page_git_status">#{html}</div>}
   end
   
 end
