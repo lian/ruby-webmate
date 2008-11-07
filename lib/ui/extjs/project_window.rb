@@ -263,40 +263,6 @@ class ProjectWindow
     end
   end
   
-  # def self.handle_edit(params,scope)
-  #   current_project = scope
-  #   if page_name = params[:page]
-  #     page_fs_path = "#{current_project.path}/page/#{page_name}.erb"
-  #     if File.exists?(page_fs_path)
-  #       case params[:edit_type] 
-  #         when "html"
-  #           "console.log('es gibt noch keinen html editor..')"
-  #         else
-  #           system("mate '#{page_fs_path}'") if File.file?(page_fs_path)
-  #           "console.log('#{page_name} hat sich in textmate geöffnet und kann jetzt bearbeitet werden.')"
-  #       end
-  #     else
-  #       "console.log('#{page_name} wurde nicht gefunden.')"
-  #     end
-  #   end
-  #   
-  #   if css_name = params[:css]
-  #     css_fs_path = "#{current_project.path}/stylesheet/#{css_name}.css"
-  #     if File.exists?(css_fs_path)
-  #       case params[:edit_type] 
-  #         when "html"
-  #           "console.log('es gibt noch keinen html editor..')"
-  #         else
-  #           system("mate '#{css_fs_path}'") if File.file?(css_fs_path)
-  #           "console.log('#{css_name} hat sich in textmate geöffnet und kann jetzt bearbeitet werden.')"
-  #       end
-  #     else
-  #       "console.log('#{css_name} wurde nicht gefunden.')"
-  #     end
-  #   end
-  #   
-  # end
-
   def self.handle_open_gitk(params,scope)
     if Webmate.projects.include? params[:project]
       if project = WebProject.load(params[:project])
@@ -324,32 +290,6 @@ class ProjectWindow
     end
   end
 
-  # def self.handle_create_page(params,scope)
-  #   if Webmate.projects.include? params[:project]
-  #     if project = WebProject.load(params[:project])
-  #       
-  #       if params[:new_page_name] && (params[:new_page_name] != "")
-  #         
-  #         if project.resources.create_page params[:new_page_name]
-  #           return %{ console.log("new page for #{project.name}: #{params[:new_page_name]} created") }
-  #         else
-  #           return %{ console.log("new page for #{project.name}: #{params[:new_page_name]} error") }
-  #         end
-  #       else
-  #         %{
-  #           function handleNewPage (a,b){
-  #             if ( a != "cancel") {
-  #               Rb.ext("project_window/create_page?project=#{project.name}&new_page_name="+b)
-  #             }
-  #           };
-  #           Ext.MessageBox.prompt('New Page for #{project.name}', 'Please enter a name:', handleNewPage );
-  #         }
-  #       end
-  #       
-  #     end
-  #   end
-  # end
-
   #     show dialog: Rb.ext("project_window/create_resource?project=#{project.name}#{resource_type}")
   # create callback: Rb.ext("project_window/create_resource?project=#{project.name}#{resource_type}&resource_name="+resource_name)
   def self.handle_create_resource(params,scope)
@@ -370,7 +310,7 @@ class ProjectWindow
           end
           
         else
-          if project.resources.scheme.keys.include? params[:resource_type].to_sym
+          if WebProjectResources::RESOURCES_SCHEME.keys.include? params[:resource_type].to_sym
             resource_type = "&resource_type=#{params[:resource_type]}"
             page_referer = params[:page] ? "&page=#{params[:page]}" : ""
             
@@ -394,11 +334,12 @@ class ProjectWindow
 
   def self.handle_create_project(params,scope)
     if params[:name] && (params[:name] != "")
-
+      
       if Webmate.create_project params[:name]
-        return %{ console.log("new project: #{name} created") }
+        redirect_to = "/project/#{params[:name]}/" # /index
+        return %{ window.location.href = #{redirect_to.to_json} }
       else
-        return %{ console.log("new project: #{name} error") }
+        return %{ console.log("new project: #{params[:name]} error") }
       end
       
     else

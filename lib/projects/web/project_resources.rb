@@ -1,19 +1,22 @@
 class WebProjectResources
+  RESOURCES_SCHEME = {
+    :page => %w{pages .erb <!-- -->},
+    :layout => %w{pages/_layout .erb <!-- --> },
+    :stylesheet => %w{resources/css .css /* */},
+    :javascript => %w{resources/js .js // //},
+  }
+  RESOURCES_TEMPLATE = {
+    :layout => %{\n<%= render_page_content %>\n}
+  }
   attr_reader :scheme
   def initialize(project)
     @project = project
-    @scheme = {
-      :page => %w{pages .erb <!-- -->},
-      :layout => %w{pages/_layout .erb <!-- -->},
-      :stylesheet => %w{resources/css .css /* */},
-      :javascript => %w{resources/js .js // //},
-    }
   end
-  
+
   def get(resource_type, name=nil)
-    return nil if !@scheme[type]
-    Dir[@project.path+"/#{@scheme[type][0]}/*#{@scheme[type][1]}"].collect { |i|
-      File.basename(i).gsub(@scheme[type][1],'')
+    return nil if !RESOURCES_SCHEME[type]
+    Dir[@project.path+"/#{RESOURCES_SCHEME[type][0]}/*#{RESOURCES_SCHEME[type][1]}"].collect { |i|
+      File.basename(i).gsub(RESOURCES_SCHEME[type][1],'')
     }
   end
   
@@ -27,14 +30,11 @@ class WebProjectResources
   def create_stylesheet(name); create_resource(:stylesheet, name); end
   def create_layout(name); create_resource(:layout, name); end
   def create_resource(type,name)
-    if scheme = @scheme[type.to_sym]
+    if scheme = RESOURCES_SCHEME[type.to_sym]
       return nil if file_list(scheme).include?(name)
-      file_path = "#{scheme[0]}/#{name}#{scheme[1]}"
-
-      old_path = Dir.pwd; Dir.chdir @project.path
-      File.open(file_path,"wb") { |f| f.print "#{scheme[2]} #{type.to_s}: #{name} #{scheme[3]}" }
-      Dir.chdir(old_path);true
-
+      file_path = File.join(@project.path, scheme[0], "#{name}#{scheme[1]}")
+      default_template = "#{scheme[2]} #{type.to_s}: #{name}#{scheme[1]} #{scheme[3]}\n#{RESOURCES_TEMPLATE[type.to_sym]}"
+      File.open(file_path,"wb") { |f| f.print(default_template) }
       commit_files( file_path, "new #{type.to_s}: #{name}" )
     end
   end

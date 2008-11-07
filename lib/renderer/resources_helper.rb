@@ -99,7 +99,7 @@ module HTMLResourcesHelper
     div = { :class => "" }
     html = ""
     if status = @page.project.git.modified_page_resource(@page)
-      puts html += %{debug_modified: #{status.inspect}<hr />}
+      # puts html += %{debug_modified: #{status.inspect}<hr />}
       div[:class] = "yellow"
       if status[:page]
         commit_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=page&name=#{@page.name}&project=#{@page.project.name}&page=#{@page.name}')}

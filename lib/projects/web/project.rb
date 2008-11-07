@@ -46,10 +46,9 @@ end
 
 class WebProject
   DIR_STRUCTURE = ["","pages","pages/_layout","pages/_partial","resources","resources/css","resources/js","resources/media"]
-  FILE_STRUCTURE = ["pages/index.erb","pages/_layout/default.erb","resources/css/default.css","resources/js/default.js"]
-  
+  FILE_STRUCTURE = [ "project.meta", "pages/index.erb","pages/_layout/default.erb","resources/css/default.css","resources/js/default.js"]
+
   def self.generate_default_files_and_directories(project_path)
-    puts "CREATING DEFAULT FOR NEW PROJEKT.."
     DIR_STRUCTURE.each  { |dir_path| tmp_path = "#{project_path}/#{dir_path}"; Dir.mkdir(tmp_path) unless File.exists?(tmp_path) }
     FILE_STRUCTURE.each { |file_path| tmp_path = "#{project_path}/#{file_path}"; File.open(tmp_path,"wb") { |f| f.print "" } unless File.exists?(tmp_path) }
     project_meta = { 'project_title' => File.basename(project_path), 'project_type' => 'web' }

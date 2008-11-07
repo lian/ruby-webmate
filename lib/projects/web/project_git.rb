@@ -7,26 +7,15 @@ class WebProjectGit
   end
   
   def self.initialize_git(path,meta)
-    puts "self.initialize_git(#{path},#{meta})"
-    #unless File.exists?(path)
+    if File.exists?(path)
       git = Git.init(path) 
-      git.add "project.meta"
-      git.add "pages/index.erb"
-      git.add "pages/_layout/default.erb"
-      git.add "resources/css/default.css"
-      git.add "resources/js/default.js"
+      WebProject::FILE_STRUCTURE.each { |file| git.add file }
       git.commit("new project: #{meta['project_title']}")
-    #end
+    end
   end
   
   def init_git
-    if File.exists?(@project.path)
-      puts "open_git: #{@project.path}"
-      @git = Git.open(@project.path)
-    else
-      puts "init_git: #{@project.path}"
-      @git = Git.init(@project.path)
-    end
+    @git = File.exists?(@project.path) ? Git.open(@project.path) : Git.init(@project.path)
   end
   
   def last_commit
