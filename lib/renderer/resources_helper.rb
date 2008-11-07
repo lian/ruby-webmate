@@ -86,17 +86,51 @@ module HTMLResourcesHelper
     }
   end
 
+  #def render_git_status
+  #  if status = @page.project.git.modified_page_resource(@page)
+  #    %{ #{status.inspect} }
+  #  else
+  #    %{no it status}
+  #  end
+  #end
+
+
   def render_git_status
     div = { :class => "" }
     html = ""
-    if @page.project.git.page_modified?(@page.name)
+    if status = @page.project.git.modified_page_resource(@page)
+      puts html += %{debug_modified: #{status.inspect}<hr />}
       div[:class] = "yellow"
-      commit_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=page&name=#{@page.name}&project=#{@page.project.name}')}
-      html += %{modified: #{@page.name}.erb - <a href="#"" onclick="#{commit_action}">commit</a>}
+      if status[:page]
+        commit_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=page&name=#{@page.name}&project=#{@page.project.name}&page=#{@page.name}')}
+        diff_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=page&name=#{@page.name}&project=#{@page.project.name}&page=#{@page.name}')}
+        html += %{modified: #{@page.name}.page - <a href="#"" onclick="#{commit_action}">commit</a> | <a href="#"" onclick="#{diff_action}">diff</a><br />}
+      end
+      if status[:stylesheet]
+        status[:stylesheet].each { |stylesheet_name|
+          commit_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=stylesheet&name=#{stylesheet_name}&project=#{@page.project.name}&page=#{@page.name}')}
+          diff_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=stylesheet&name=#{stylesheet_name}&project=#{@page.project.name}&page=#{@page.name}')}
+          html += %{modified: #{stylesheet_name}.css - <a href="#"" onclick="#{commit_action}">commit</a> | <a href="#"" onclick="#{diff_action}">diff</a><br />}
+        }
+      end
+      if status[:javascript]
+        status[:javascript].each { |javascript_name|
+          commit_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=javascript&name=#{javascript_name}&project=#{@page.project.name}&page=#{@page.name}')}
+          diff_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=javascript&name=#{javascript_name}&project=#{@page.project.name}&page=#{@page.name}')}
+          html += %{modified: #{javascript_name}.js - <a href="#"" onclick="#{commit_action}">commit</a> | <a href="#"" onclick="#{diff_action}">diff</a><br />}
+        }
+      end
+      if status[:layout]
+        layout_name = @page.resources.layout || "default"
+        commit_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=layout&name=#{layout_name}&project=#{@page.project.name}&page=#{@page.name}')}
+        diff_action = %{Rb.request('/javascript-bundle-ext/project_window/commit?type=layout&name=#{layout_name}&project=#{@page.project.name}&page=#{@page.name}')}
+        html += %{modified: #{layout_name}.layout - <a href="#"" onclick="#{commit_action}">commit</a> | <a href="#"" onclick="#{diff_action}">diff</a><br />}
+      end
+      # html += %{modified: #{@page.name}.erb - <a href="#"" onclick="#{commit_action}">commit</a>}
     else
       div[:class] = "green"
-      html += "unchanged: #{@page.name}.erb - "
       commit = @page.project.git.last_commit
+      html += "#{commit[:commit][0..5]} #{@page.name}.erb - <a href='#'>diff</a> - "
       html += "changed by #{commit[:author]} - #{commit[:date]}"
     end
     %{<div class="#{div[:class]}" style="border:#{div[:class]} 1px solid; padding:10px" id="webmate_page_git_status">#{html}</div>}

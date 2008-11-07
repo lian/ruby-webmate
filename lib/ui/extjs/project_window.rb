@@ -309,11 +309,13 @@ class ProjectWindow
   def self.handle_commit(params,scope)
     # params: project, name|resource_name, type|resource_type
     if Webmate.projects.include? params[:project]
-      if project = WebProject.load(params[:project])
-        if project.git.commit_page(params[:name])
+      if params[:type] && project = WebProject.load(params[:project])
+        if project.git.commit(params[:name],params[:type])
+          redirect_to = params[:page]
+          redirect_to = params[:name] if params[:type] == "page"
           return %{
             console.log("gesichert. ..weiterleitung/page-refresh")
-            window.location.href = #{params[:name].to_json};
+            window.location.href = #{redirect_to.to_json};
           }
         else
           return %{ console.log("fehler beim sichern..") }

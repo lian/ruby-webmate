@@ -49,27 +49,14 @@ class WebProject
   FILE_STRUCTURE = ["pages/index.erb","pages/_layout/default.erb","resources/css/default.css","resources/js/default.js"]
   
   def self.generate_default_files_and_directories(project_path)
+    puts "CREATING DEFAULT FOR NEW PROJEKT.."
     DIR_STRUCTURE.each  { |dir_path| tmp_path = "#{project_path}/#{dir_path}"; Dir.mkdir(tmp_path) unless File.exists?(tmp_path) }
     FILE_STRUCTURE.each { |file_path| tmp_path = "#{project_path}/#{file_path}"; File.open(tmp_path,"wb") { |f| f.print "" } unless File.exists?(tmp_path) }
     project_meta = { 'project_title' => File.basename(project_path), 'project_type' => 'web' }
     File.open(project_path+"/project.meta","wb") { |f| f.print project_meta.to_yaml }
     File.open(project_path+"/pages/_layout/default.erb","wb") { |f| f.print %{\n<%= render_page_content %>\n} }
-    self.initialize_git(project_path, project_meta)
+    WebProjectGit.initialize_git(project_path,project_meta)
     [project_path, project_meta]
-  end
-
-  def self.initialize_git(path,meta)
-    unless File.exists?(path+"/.git")
-      old_pwd = Dir.pwd; Dir.chdir(path)
-      system "git init > /dev/null 2>&1"
-      system "git add project.meta > /dev/null 2>&1"
-      system "git add pages/index.erb > /dev/null 2>&1"
-      system "git add pages/_layout/default.erb > /dev/null 2>&1"
-      system "git add resources/css/default.css > /dev/null 2>&1"
-      system "git add resources/js/default.js > /dev/null 2>&1"
-      system "git commit -m 'new project: #{meta['project_title']}' > /dev/null 2>&1"
-      Dir.chdir(old_pwd);true
-    end
   end
 
   def self.create(name)
