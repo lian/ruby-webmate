@@ -86,6 +86,18 @@ module HTMLResourcesHelper
       		//Rb.project_request("sitemap_window/edit?type=page&name="+document.body.id);
           Rb.request("/javascript-bundle-ext/project_window/edit?project=#{@page.project.name}&type=page&name=#{@page.name}")
       	}
+      	
+      	if ((event.keyCode == 71) && (event.ctrlKey)) {
+  			if ($("#grid_overlay").css("display") == "none") {
+  				$("#grid_overlay").css("height", window.screen.height+"px")
+  				$("#grid_overlay").slideDown()
+  			} else {
+  				$("#grid_overlay").slideUp()
+  			}
+      	  	event.returnValue = false;
+      	  	return false;
+      	}
+
 
       }
 </script>
