@@ -80,7 +80,14 @@ get "/preview/project/*/css/*" do
   content_type 'text/css', :charset => 'utf-8'
   name, stylesheet_path = params[:splat]
   if Webmate.projects.include? name
-    WebProject.load(name).read_stylesheet stylesheet_path
+    project = WebProject.load(name)
+    if project.stylesheets.include? stylesheet_path.gsub(".css","")
+      project.read_stylesheet stylesheet_path
+    else
+      if lib = JavascriptBundle.find(stylesheet_path.split("/")[0])
+        lib.read_file(stylesheet_path.split("/")[1..-1].join("/"))
+      end
+    end
   end
 end
 
@@ -88,7 +95,14 @@ get "/preview/project/*/js/*" do
   content_type 'text/javascript', :charset => 'utf-8'
   name, javascript_path = params[:splat]
   if Webmate.projects.include? name
-    WebProject.load(name).read_javascript javascript_path
+    project = WebProject.load(name)
+    if project.javascripts.include? javascript_path.gsub(".js","")
+      project.read_javascript javascript_path
+    else
+      if lib = JavascriptBundle.find(javascript_path.split("/")[0])
+        lib.read_file(javascript_path.split("/")[1..-1].join("/"))
+      end
+    end
   end
 end
 

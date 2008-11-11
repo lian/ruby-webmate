@@ -32,12 +32,13 @@ module HTMLResourcesHelper
         # %{<script src="/project/#{@page.project.name}/js/#{js}.js" type="text/javascript" charset="utf-8"></script>}
         %{<script src="js/#{js}.js" type="text/javascript" charset="utf-8"></script>}
       elsif lib = JavascriptBundle.find(js)
-        case @scope.env
-          when :production
-            lib.render_html.gsub("/javascript-bundle/","js/")
-          else
-            lib.render_html
-        end
+        lib.render_html_(@scope.env)
+        # case @scope.env
+        #   when :production
+        #     lib.render_html.gsub("/javascript-bundle/","js/")
+        #   else
+        #     lib.render_html
+        # end
       end
     }.join("\n")
     [%{<!-- require_javascripts: begin -->}, html, %{<!-- require_javascripts: end -->}].join("\n")
@@ -60,12 +61,13 @@ module HTMLResourcesHelper
         # %{<link rel="stylesheet" type="text/css" href="/project/#{@page.project.name}/css/#{css}.css" />}
         %{<link rel="stylesheet" type="text/css" href="css/#{css}.css" />}
       elsif lib = JavascriptBundle.find(css)
-        case @scope.env
-          when :production
-            lib.render_html.gsub("/javascript-bundle/","css/")
-          else
-            lib.render_html
-        end
+        lib.render_html_(@scope.env)
+        # case @scope.env
+        #   when :production
+        #     lib.render_html.gsub("/javascript-bundle/","css/")
+        #   else
+        #     lib.render_html
+        # end
       end
     }.join("\n")
     [%{<!-- require_stylesheets: begin -->}, html, %{<!-- require_stylesheets: end -->}].join("\n")
