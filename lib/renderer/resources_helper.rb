@@ -29,16 +29,9 @@ module HTMLResourcesHelper
     layout_js = @resources[:javascript].select { |i| !page_js.include?(i) }
     html = (layout_js + page_js).uniq.collect { |js|
       if @project.javascripts.include?(js)
-        # %{<script src="/project/#{@page.project.name}/js/#{js}.js" type="text/javascript" charset="utf-8"></script>}
         %{<script src="js/#{js}.js" type="text/javascript" charset="utf-8"></script>}
       elsif lib = JavascriptBundle.find(js)
-        lib.render_html_(@scope.env)
-        # case @scope.env
-        #   when :production
-        #     lib.render_html.gsub("/javascript-bundle/","js/")
-        #   else
-        #     lib.render_html
-        # end
+        lib.render_html(@scope.env)
       end
     }.join("\n")
     [%{<!-- require_javascripts: begin -->}, html, %{<!-- require_javascripts: end -->}].join("\n")
@@ -58,16 +51,9 @@ module HTMLResourcesHelper
     layout_css = @resources[:stylesheet].select { |i| !page_css.include?(i) }
     html = (layout_css + page_css).uniq.collect { |css|
       if @project.stylesheets.include?(css)
-        # %{<link rel="stylesheet" type="text/css" href="/project/#{@page.project.name}/css/#{css}.css" />}
         %{<link rel="stylesheet" type="text/css" href="css/#{css}.css" />}
       elsif lib = JavascriptBundle.find(css)
-        lib.render_html_(@scope.env)
-        # case @scope.env
-        #   when :production
-        #     lib.render_html.gsub("/javascript-bundle/","css/")
-        #   else
-        #     lib.render_html
-        # end
+        lib.render_html(@scope.env)
       end
     }.join("\n")
     [%{<!-- require_stylesheets: begin -->}, html, %{<!-- require_stylesheets: end -->}].join("\n")
