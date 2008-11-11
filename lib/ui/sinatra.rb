@@ -14,6 +14,7 @@ Webmate.projects_path "/Users/langschaedel/cc/webmate-projects" # "/Volumes/data
 
 
 
+## projects routes
 get "/" do
   erb :default
 end
@@ -26,6 +27,7 @@ get "/project/*/" do
   end
 end
 
+## project routes
 get "/project/*/:page" do
   name = params[:splat].first
   if Webmate.projects.include? name
@@ -36,12 +38,6 @@ get "/project/*/:page" do
     end
   end
 end
-
-get "/preview/project/*/:page" do
-  # ..
-  # RenderEngine.run @page, :production
-end
-
 
 get "/project/*/css/*" do
   content_type 'text/css', :charset => 'utf-8'
@@ -60,6 +56,43 @@ get "/project/*/js/*" do
 end
 
 get "/project/*/media/*" do
+  content_type 'text/css', :charset => 'utf-8'
+  name, media_path = params[:splat]
+  if Webmate.projects.include? name
+    WebProject.load(name).read_media_file media_path
+  end
+end
+
+## preview routes
+get "/preview/project/*/:page" do
+  name = params[:splat].first
+  if Webmate.projects.include? name
+    @project = WebProject.new "#{Webmate.projects_path}/#{name}"
+    if @project.pages.include? params[:page]
+      @page = WebPage.new params[:page], @project
+      #DeployRenderEngine.run @page
+      RenderEngine.run @page, :production
+    end
+  end
+end
+
+get "/preview/project/*/css/*" do
+  content_type 'text/css', :charset => 'utf-8'
+  name, stylesheet_path = params[:splat]
+  if Webmate.projects.include? name
+    WebProject.load(name).read_stylesheet stylesheet_path
+  end
+end
+
+get "/preview/project/*/js/*" do
+  content_type 'text/javascript', :charset => 'utf-8'
+  name, javascript_path = params[:splat]
+  if Webmate.projects.include? name
+    WebProject.load(name).read_javascript javascript_path
+  end
+end
+
+get "/preview/project/*/media/*" do
   content_type 'text/css', :charset => 'utf-8'
   name, media_path = params[:splat]
   if Webmate.projects.include? name

@@ -1,14 +1,13 @@
 require File.dirname(__FILE__) + '/resources.rb'
 
 class RenderEngine
-  def self.run(page);new(page).run;end
+  def self.run(page,env=:development);new(page,env).run;end
 end
 
 class RenderEngine
-  attr_accessor :cache, :page
-  def initialize(page)
-    @page = page
-    @cache = {}
+  attr_accessor :cache, :page, :env
+  def initialize(page, env=:development)
+    @page, @env, @cache = page, env, {}
     @resources = RenderEngineResources.new(self)
   end
   
@@ -27,7 +26,12 @@ class RenderEngine
   end
   
   def render_html
-    @cache[:html] ||= eval(ERB.new(HTML_TEMPLATE).src, get_resources_binding )
+    case @env
+    when :production
+      @cache[:html] ||= eval(ERB.new(PRODUCTION_HTML_TEMPLATE).src, get_resources_binding )
+    else
+      @cache[:html] ||= eval(ERB.new(HTML_TEMPLATE).src, get_resources_binding )
+    end
   end
   
   def get_resources_binding
@@ -47,6 +51,8 @@ class RenderEngine
   end
 end
 
+
+
 HTML_TEMPLATE = %{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
 <head>
@@ -64,5 +70,21 @@ HTML_TEMPLATE = %{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.
 <%= render_layout %>
 
 <!-- webmate: git-status begin --><%= render_git_status %><!-- webmate: git-status end --> 
+</body>
+</html>}
+
+PRODUCTION_HTML_TEMPLATE = %{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title><%= @page.project.name %> - <%= @page.name.capitalize %></title>
+
+<%= require_javascripts %>
+
+<%= require_stylesheets %>
+
+</head>
+<body>
+<%= render_layout %>
 </body>
 </html>}
