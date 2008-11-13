@@ -9,8 +9,7 @@ class WebPage
   end
   
   def render_erb(passed_binding=nil)
-    content = open( erb_path ).read
-    eval(ERB.new(content).src, (passed_binding || @resources.get_binding) )
+    open(erb_path) { |file| eval(ERB.new(file.read).src, (passed_binding || @resources.get_binding)) }
   end
   
   def refresh_resources;render_erb;true;end

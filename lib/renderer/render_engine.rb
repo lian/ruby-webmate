@@ -43,8 +43,7 @@ class RenderEngine
     layout_name = layout_name || (layout_name == :none) ||"default"
     layout_path = "#{@page.project.path}/pages/_layout/#{layout_name}.erb"
     if File.exists?(layout_path)
-      content = open(layout_path).read
-      eval(ERB.new(content).src, get_resources_binding )
+      open(layout_path) { |file| eval(ERB.new(file.read).src, get_resources_binding) }
     else
       render_page
     end
