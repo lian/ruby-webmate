@@ -32,6 +32,7 @@ class WebProjectDeploy
     @project.stylesheets.each { |css| FileUtils.cp "#{@project.path}/resources/css/#{css}.css", "#{@target}/css/#{css}.css" }
     @project.javascripts.each { |js| FileUtils.cp "#{@project.path}/resources/js/#{js}.js", "#{@target}/js/#{js}.js" }
     copy_jsbundle_resources
+    copy_media_resources
   end
   def copy_jsbundle_resources
     @missing_jsbundle_resources.each { |resource_name|
@@ -41,7 +42,15 @@ class WebProjectDeploy
       end
     };true
   end
+  def copy_media_resources
+    target_media = @target+"/media"
+    Dir.mkdir(target_media) unless File.exists?(target_media)
+    Dir["#{@project.path}/resources/media/*"].each { |file|
+      FileUtils.cp_r file, "#{target_media}/#{File.basename file}"
+    };true
+  end
   def deploy!
+    return nil unless File.exists?(@target)
     build_pages
     copy_resources
     # commit_depoly # if deploy folder is a git repo
