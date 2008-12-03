@@ -18,6 +18,8 @@ class ProjectTree
         }
       when :git
         JavascriptBundle::Ext::Handler.new %{ Rb.ext("project_window/open_gitk?project=#{@project.name}") }
+      when :deploy
+        JavascriptBundle::Ext::Handler.new %{ Rb.ext("project_window/simple_deploy?project=#{@project.name}") }
       when :show
         if type == :page
           JavascriptBundle::Ext::Handler.new %{
@@ -39,6 +41,7 @@ class ProjectTree
       when :pages
         menu.items << menu_item("add", :page, :new)
         menu.items << menu_item("gitk", :page, :git)
+        menu.items << menu_item("deploy", :page, :deploy)
       when :page
         menu.items << menu_item("show", :page)
         menu.items << menu_item("edit", :page)
@@ -268,6 +271,15 @@ class ProjectWindow
       if project = WebProject.load(params[:project])
         system "cd #{project.path}; gitk &" # project.git.open_gitk
         return %{ console.log("gitk: #{params[:project]} geöffnet") }
+      end
+    end
+  end
+  
+  def self.handle_simple_deploy(params,scope) # fix ugly mess..
+    if Webmate.projects.include? params[:project]
+      if project = WebProject.load(params[:project])
+        WebProjectDeploy.new(project).deploy!
+        return %{ console.log("simple_deploy: #{params[:project]} angestoßen!") }
       end
     end
   end

@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + "/project_git.rb"
 require File.dirname(__FILE__) + "/project_page.rb"
 require File.dirname(__FILE__) + "/project_resources.rb"
+require File.dirname(__FILE__) + "/project_deploy.rb"
 
 class WebProject
   attr_accessor :path, :meta, :git, :resources

@@ -2,8 +2,8 @@ require 'rubygems'
 require "yaml"
 require 'sinatra'
 require File.dirname(__FILE__) + "/../webmate.rb"
-require File.dirname(__FILE__) + "/../../../github/javascript-bundle.git/lib/adapter/sinatra.rb"
-require File.dirname(__FILE__) + "/../../../github/javascript-bundle.git/lib/extjs/adapter/sinatra.rb"
+require File.dirname(__FILE__) + "/../" + Webmate.javascript_bundle_path + "lib/adapter/sinatra.rb"
+require File.dirname(__FILE__) + "/../" + Webmate.javascript_bundle_path + "/lib/extjs/adapter/sinatra.rb"
 
 JavascriptBundle::Backend::Sinatra.init
 JavascriptBundle::Ext::Backend::Sinatra.init

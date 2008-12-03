@@ -20,9 +20,13 @@ module Webmate
   def self.create_project(name)
     WebProject.create(name) unless self.projects.include?(name)
   end
+  
+  def self.javascript_bundle_path
+    '/../../javascript-bundle.git/lib/javascript-bundle.rb'
+  end
 end
 
 require File.dirname(__FILE__) + '/projects/web/project.rb'
 #require File.dirname(__FILE__) + '/projects/web/html_renderer.rb'
 require File.dirname(__FILE__) + '/renderer/render_engine.rb'
-require File.dirname(__FILE__) + '/../../github/javascript-bundle.git/lib/javascript-bundle.rb'
+require File.dirname(__FILE__) + Webmate.javascript_bundle_path
