@@ -22,11 +22,11 @@ module Webmate
   end
   
   def self.javascript_bundle_path
-    '/../../javascript-bundle.git/lib/javascript-bundle.rb'
+    '/../../javascript-bundle.git'
   end
 end
 
 require File.dirname(__FILE__) + '/projects/web/project.rb'
 #require File.dirname(__FILE__) + '/projects/web/html_renderer.rb'
 require File.dirname(__FILE__) + '/renderer/render_engine.rb'
-require File.dirname(__FILE__) + Webmate.javascript_bundle_path
+require File.dirname(__FILE__) + Webmate.javascript_bundle_path + "/lib/javascript-bundle.rb"

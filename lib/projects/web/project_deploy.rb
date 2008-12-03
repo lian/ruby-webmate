@@ -36,7 +36,7 @@ class WebProjectDeploy
   def copy_jsbundle_resources
     @missing_jsbundle_resources.each { |resource_name|
       if lib = JavascriptBundle.find(resource_name)
-        lib.deploy_to "#{@target}/#{js}"
+        lib.deploy_to "#{@target}/js"
         puts "deployed #{resource_name} resource to #{@target}"; true
       end
     };true
