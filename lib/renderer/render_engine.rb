@@ -60,9 +60,9 @@ HTML_TEMPLATE = %{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.
 
 <%= load_development_envoirment %>
 
-<%= require_javascripts %>
-
 <%= require_stylesheets %>
+
+<%= require_javascripts %>
 
 </head>
 <body>
@@ -78,9 +78,9 @@ PRODUCTION_HTML_TEMPLATE = %{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><%= @page.project.name %> - <%= @page.name.capitalize %></title>
 
-<%= require_javascripts %>
-
 <%= require_stylesheets %>
+
+<%= require_javascripts %>
 
 </head>
 <body>
