@@ -1,0 +1,10 @@
+# Ruby-Webmate
+
+ruby-webmate is a web based development IDE for ruby, cpp and git projects in general.
+
++ each project is a git respository
++ deploy branches to filesystem, ftp, ..
++ javascript-bundle for web-projects
+
+# NOTE - only for personal tinker use, no support or releases yet,
+#        coded last year and might get resumed in 2009. :)
