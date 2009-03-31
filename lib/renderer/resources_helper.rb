@@ -24,6 +24,11 @@ module PageResourcesHelper
 end
 
 module HTMLResourcesHelper
+  def nav_link(page_name, title=nil)
+    css_class = ((@page.name == page_name) ? 'class="on" ' : '')
+    %{<a #{css_class}href="#{page_name}.html">#{title || page_name}</a>}
+  end
+  
   def require_javascripts
     page_js = (@page.resources.javascripts.size == 0) ? ["default"] : @page.resources.javascripts
     layout_js = @resources[:javascript].select { |i| !page_js.include?(i) }
@@ -38,7 +43,7 @@ module HTMLResourcesHelper
   end
   
   def load_development_envoirment
-    html = %w{extjs ruby-js growl}.collect { |i|
+    html = %w{extjs ruby-js growl jquery}.collect { |i|
       if lib = JavascriptBundle.find(i)
         lib.render_html
       end
@@ -61,6 +66,12 @@ module HTMLResourcesHelper
   
   def load_development_scripts
     %{
+<style type="text/css" media="screen">
+	#grid_overlay {
+		display:none;position:absolute;top:0px;left:0;right:0;bottom:0;z-index:10000;
+		background: url('/javascript-bundle/ruby-js/trunk/grid-overlay.gif') repeat;
+	}
+</style>
 <script type="text/javascript" charset="utf-8">
       var project_window = null;
 
@@ -89,7 +100,8 @@ module HTMLResourcesHelper
       	
       	if ((event.keyCode == 71) && (event.ctrlKey)) {
   			if ($("#grid_overlay").css("display") == "none") {
-  				$("#grid_overlay").css("height", window.screen.height+"px")
+  				$("#grid_overlay").css("height", window.screen.height+"px");
+  				//$("#grid_overlay").css("width", window.screen.width+"px");
   				$("#grid_overlay").slideDown()
   			} else {
   				$("#grid_overlay").slideUp()

@@ -69,6 +69,7 @@ HTML_TEMPLATE = %{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.
 <%= render_layout %>
 
 <!-- webmate: git-status begin --><%= render_git_status %><!-- webmate: git-status end --> 
+<!-- webmate: grid-overlay begin --><div id="grid_overlay"></div><!-- webmate: grid-overlay end --> 
 </body>
 </html>}
 
